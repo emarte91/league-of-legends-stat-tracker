@@ -1,6 +1,6 @@
 import requests
 
-api_key = "RGAPI-2716fc2f-daae-4a21-a559-7236e0c97a3c"
+api_key = "Enter API"
 
 
 def get_encrypted_summoner_id():
