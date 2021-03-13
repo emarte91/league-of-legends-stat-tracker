@@ -1,6 +1,7 @@
 import requests
 
-api_key = "RGAPI-2716fc2f-daae-4a21-a559-7236e0c97a3c" # test
+api_key = ""
+summoner_name = str.title("")  # input("Enter in a summoner name: ")
 
 
 def get_encrypted_summoner_id():
@@ -8,7 +9,6 @@ def get_encrypted_summoner_id():
     Fetches encrypted ID from summoner name.
     Needed for further requests.
     """
-    summoner_name = "dominicanpapi69"
     id_url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summoner_name + "?api_key=" + api_key
     response = requests.get(id_url)
     results_json = response.json()
@@ -20,9 +20,8 @@ def get_champion_mastery():
     encrypted = get_encrypted_summoner_id()
     mastery_url = "https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/" + \
                   encrypted + "?api_key=" + api_key
-    response = requests.get(mastery_url)
-    response_results = response.json()
-    top_three_champs = [response_results[0], response_results[1], response_results[2]]
+    response = requests.get(mastery_url).json()  # stores response json format
+    top_three_champs = [response[0], response[1], response[2]]
     champion_id = {266: "Aatrox",
                    412: "Thresh",
                    23: "Tryndamere",
@@ -165,4 +164,27 @@ def get_champion_mastery():
         print(champion_name + f" Mastery Level {champion_level} {mastery_points} Mastery Points")
 
 
-get_champion_mastery()
+def get_game_stats():
+    encrypted = get_encrypted_summoner_id()
+    stats_url = "https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/" + encrypted + "?api_key=" + api_key
+    response = requests.get(stats_url).json()
+    rd = response[0]  # response is returned as a single element list formatted as a dict. This makes it a dict
+    wins = rd['wins']
+    losses = rd['losses']
+    winrate = int(wins * 100 / (wins + losses))
+    print(summoner_name + f" \nRank: {rd['tier']} {rd['rank']} {rd['leaguePoints']} LP \n{wins} Wins  {losses} Losses\nWin rate: {winrate}%")
+
+
+def temp_menu():
+    x = 2 #int(input('Choose an option \n1. Champion Mastery Info\n2. Ranked Stats\n:: '))
+    if x == 1:
+        get_champion_mastery()
+    elif x == 2:
+        get_game_stats()
+
+
+temp_menu()
+"""
+Things to add 
+ladder rank #1020323 top 21%
+"""
